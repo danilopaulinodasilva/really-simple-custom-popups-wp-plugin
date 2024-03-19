@@ -298,9 +298,19 @@ add_action('wp_head', 'custom_popup_custom_css');
 
 // Register Shortcode Rendering
 function render_custom_popup_shortcode($atts) {
-    $atts = shortcode_atts(array(
-        'post_id' => 0,
-    ), $atts, 'custom_popup');
+    // Extrair os atributos e definir valores padrão
+    $atts = shortcode_atts(
+        array(
+            'post_id' => 0,
+            'title' => 'Título do popup',
+            'background' => '#FDF9D4',
+            'button_text' => 'Saiba mais',
+            'button_color' => '#0d2516',
+            'border_radius' => '0px'
+        ),
+        $atts,
+        'custom_popup'
+    );
 
     // Verify if post ID was provided
     if ($atts['post_id']) {
@@ -313,14 +323,14 @@ function render_custom_popup_shortcode($atts) {
         // Generate a unique ID for the modal
         $modal_id = 'custom_popup_modal_' . $atts['post_id'];
 
-        // Generate the button HTML
-        $button_html = '<button class="custom-popup-button" data-toggle="modal" data-target="#' . esc_attr($modal_id) . '">Abrir modal</button>';
+        // Generate the button HTML with new properties
+        $button_html = '<button class="custom-popup-button" data-toggle="modal" data-target="#' . esc_attr($modal_id) . '" style="border-radius: ' . esc_attr($atts['border_radius']) . '; background: ' . esc_attr($atts['button_color']) . ';">' . esc_html($atts['button_text']) . '</button>';
 
         // Generate the modal HTML
         $modal_html = '<div class="modal" id="' . esc_attr($modal_id) . '">
-                            <div class="modal-content">
+                            <div class="modal-content" style="background: ' . esc_attr($atts['background']) . ';">
                                 <span class="close">&times;</span>
-                                <div class="modal-body"><h2> ' . $popup_title. '</h2>' . $html_content . '</div>
+                                <div class="modal-body"><h2 style="margin-left:20px;">' . esc_html($atts['title']) . '</h2>' . $html_content . '</div>
                             </div>
                         </div>';
 
